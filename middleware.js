@@ -32,7 +32,7 @@ module.exports.isOwner  = async (req,res,next) =>{
     }
 };
 
-module.exports.validateReview = (res,req,next) => {
+module.exports.validateReview = (req,res,next) => {
   let {error} = reviewSchema.validate(req.body);
   if(error){
     let errMsg = error.details.map((el) => el.message).join(",");

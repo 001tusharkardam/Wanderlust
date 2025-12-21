@@ -1,4 +1,4 @@
-if(process.env.NODE_ENV != "production"){
+if (process.env.NODE_ENV != "production") {
   require("dotenv").config();
 }
 const express = require("express");
@@ -11,9 +11,9 @@ const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
 const MongoStore = require("connect-mongo").default;
 const flash = require("connect-flash");
-const passport=require("passport");
-const LocalStrategy=require("passport-local");
-const User=require("./models/user.js");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user.js");
 const cloudinary = require('cloudinary').v2;
 
 // Configure Cloudinary
@@ -52,36 +52,36 @@ app.use(express.static(path.join(__dirname, "/uploads")));
 app.use(express.static("public"));
 
 const store = MongoStore.create({
-  mongoUrl:dbUrl,
-  crypto:{
-    secret:process.env.SECRET,
+  mongoUrl: dbUrl,
+  crypto: {
+    secret: process.env.SECRET,
   },
-  touchAfter:24*3600,
+  touchAfter: 24 * 3600,
 });
 
-store.on("error",()=>{
- console.log("error in mongo session store", err);
+store.on("error", (err) => {
+  console.log("error in mongo session store", err);
 });
 
 const sessionoption = {
   store,
-  secret: process.env.SECRET ,
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie:{
-    expire: Date.now()+7*24*60*60*1000,
-    maxage:7*24*60*60*1000,
-    httpOnly:true,
+  cookie: {
+    expire: Date.now() + 7 * 24 * 60 * 60 * 1000,
+    maxage: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
   },
 
 };
 
-// app.get("/", (req, res) => {
-//   res.send("Hi, I am root");
-// });
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
 
 
- 
+
 app.use(session(sessionoption));
 app.use(flash());
 app.use(passport.initialize());
@@ -90,11 +90,11 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-app.use((req,res,next)=>{
-res.locals.success=req.flash("success");
-res.locals.error=req.flash("error");
-res.locals.currUser = req.user;
-next();
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  res.locals.currUser = req.user;
+  next();
 });
 
 // app.get("/demouser", (req,res)=>{
@@ -107,9 +107,9 @@ next();
 //   res.send(registeredUser);
 // });
 
-  app.use("/listings", listingsRouter);
-  app.use("/listings/:id/reviews", reviewsRouter);
-  app.use("/", userRouter);
+app.use("/listings", listingsRouter);
+app.use("/listings/:id/reviews", reviewsRouter);
+app.use("/", userRouter);
 
 
 app.use((req, res, next) => {
@@ -117,11 +117,11 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  let {statusCode=500, message="something went wrong!"} = err;
-  res.status(statusCode).render("error.ejs", {message});
+  let { statusCode = 500, message = "something went wrong!" } = err;
+  res.status(statusCode).render("error.ejs", { message });
   // res.status(statusCode).send(message);
 });
 
-app.listen(8080, () => {
+app.listen(process.env.PORT || 8080, () => {
   console.log("server is listening to port 8080");
 });

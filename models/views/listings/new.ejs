@@ -1,6 +1,37 @@
     <%layout("layouts/boilerplate") %>
+    <style>
+      .new-listing-container {
+        background: #f8f8f8;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      }
+
+      .new-listing-container h3 {
+        color: #222;
+        margin-bottom: 2rem;
+        font-weight: 600;
+      }
+
+      .new-listing-container .form-control,
+      .new-listing-container .form-control:focus {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+      }
+
+      .new-listing-container .form-control:focus {
+        border-color: #ff385c;
+        box-shadow: 0 0 0 0.2rem rgba(255, 56, 92, 0.15);
+      }
+
+      .new-listing-container .btn {
+        border-radius: 8px;
+        font-weight: 600;
+      }
+    </style>
     <div class="row mt-3">
       <div class="col-8 offset-2">
+        <div class="new-listing-container">
          <!-- <br /><br /> -->
     <h3>Create a New Listing</h3>
     <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
@@ -64,6 +95,24 @@
 
 </div>
 
+<div class="mb-3">
+  <label for="category" class="form-label">Category</label>
+  <select id="categorySelect" name="listing[category]" class="form-control" required>
+    <option value="">Select a category</option>
+    <option value="Trending">Trending</option>
+    <option value="Iconic Cities">Iconic Cities</option>
+    <option value="Mountains">Mountains</option>
+    <option value="Amazing pools">Amazing pools</option>
+    <option value="Castles">Castles</option>
+    <option value="Camping">Camping</option>
+    <option value="Farms">Farms</option>
+    <option value="Arctic">Arctic</option>
+    <option value="Domes">Domes</option>
+    <option value="Boats">Boats</option>
+  </select>
+  <div class="invalid-feedback">Please select a category</div>
+</div>
+
 
       <div class="mb-3">
       <label for="location" class="form-label">Location</label>
@@ -76,6 +125,7 @@
       <button class="btn btn-dark add-btn mt-3">Add</button>
    
     </form>
+        </div>
     </div>
     </div>
- 
+    
