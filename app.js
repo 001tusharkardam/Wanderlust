@@ -26,8 +26,9 @@ cloudinary.config({
 const listingsRouter = require("./classroom/routes/listing.js");
 const reviewsRouter = require("./classroom/routes/review.js");
 const userRouter = require("./classroom/routes/user.js");
+const aiRouter = require("./classroom/routes/ai.js");
 
-// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+// const dbUrl = "mongodb://127.0.0.1:27017/wanderlust";
 const dbUrl = process.env.ATLASDB_URL;
 
 main()
@@ -110,6 +111,7 @@ app.use((req, res, next) => {
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
 app.use("/", userRouter);
+app.use("/ai", aiRouter);
 
 
 app.use((req, res, next) => {
@@ -122,6 +124,10 @@ app.use((err, req, res, next) => {
   // res.status(statusCode).send(message);
 });
 
-app.listen(process.env.PORT || 8080, () => {
-  console.log("server is listening to port 8080");
-});
+if (require.main === module) {
+  app.listen(process.env.PORT || 8080, () => {
+    console.log("server is listening to port 8080");
+  });
+}
+
+module.exports = app;

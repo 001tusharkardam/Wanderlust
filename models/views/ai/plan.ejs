@@ -1,0 +1,98 @@
+<% layout("/layouts/boilerplate") %>
+    <div class="row mt-3">
+        <div class="col-8 offset-2">
+            <h3 class="mb-4">Plan Your Dream Trip with AI ✨</h3>
+            <form method="POST" action="/ai/plan" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label for="destination" class="form-label">Where do you want to go?</label>
+                    <input type="text" name="destination" class="form-control" required
+                        placeholder="e.g., Kashmir, Paris, Tokyo" value="<%= destination || '' %>">
+                </div>
+
+                <div class="row">
+                    <div class="mb-3 col-md-6">
+                        <label for="source" class="form-label">Starting From (Source)</label>
+                        <input type="text" name="source" class="form-control" required placeholder="e.g., Delhi, Mumbai"
+                            value="<%= source || '' %>">
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <label for="transport" class="form-label">Preferred Mode of Transport</label>
+                        <select name="transport" class="form-select" required>
+                            <option value="Any (Best Option)">Any (Best Option)</option>
+                            <option value="Train 🚂">Train 🚂</option>
+                            <option value="Bus 🚌">Bus 🚌</option>
+                            <option value="Car/Taxi 🚖">Car/Taxi 🚖</option>
+                            <option value="Bike 🏍️">Bike 🏍️</option>
+                            <option value="Flight ✈️">Flight ✈️</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="mb-3 col-md-6">
+                        <label for="days" class="form-label">Duration (Days)</label>
+                        <input type="number" name="days" class="form-control" required min="1" max="30" value="3">
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <label for="budget" class="form-label">Budget (per person)</label>
+                        <select name="budget" class="form-select" required>
+                            <option value="₹500 - ₹2,000 (Day Trip/Pocket Friendly)">₹500 - ₹2,000 (Day Trip/Pocket
+                                Friendly)</option>
+                            <option value="₹2,000 - ₹5,000 (Budget Stay)">₹2,000 - ₹5,000 (Budget Stay)</option>
+                            <option value="₹5,000 - ₹10,000 (Standard)" selected>₹5,000 - ₹10,000 (Standard)</option>
+                            <option value="₹10,000 - ₹20,000 (Comfort)">₹10,000 - ₹20,000 (Comfort)</option>
+                            <option value="₹20,000 - ₹50,000 (Premium)">₹20,000 - ₹50,000 (Premium)</option>
+                            <option value="₹50,000 - ₹1,00,000 (Luxury)">₹50,000 - ₹1,00,000 (Luxury)</option>
+                            <option value="₹1,00,000+ (Ultra Luxury)">₹1,00,000+ (Ultra Luxury)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="interests" class="form-label">Interests & Preferences</label>
+                    <input type="text" name="interests" class="form-control" required
+                        placeholder="e.g., Adventure, Local Food, Museums, Relaxing">
+                </div>
+
+                <button class="btn btn-danger w-100">Generate Itinerary</button>
+            </form>
+
+            <% if(plan) { %>
+                <hr class="mt-5 mb-5">
+                <div class="card shadow-lg border-0 mb-5">
+                    <div class="card-header bg-danger text-white">
+                        <h4 class="m-0"><i class="fa-solid fa-plane-departure"></i> Your Trip to <%= destination %>
+                        </h4>
+                    </div>
+                    <div class="card-body bg-light">
+                        <div class="card-text ai-response">
+                            <%- plan %>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+        </div>
+    </div>
+
+    <style>
+        .ai-response h1,
+        .ai-response h2,
+        .ai-response h3 {
+            color: #fe424d;
+            /* Wanderlust theme color */
+            margin-top: 1rem;
+        }
+
+        .ai-response ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .ai-response li {
+            margin-bottom: 5px;
+        }
+
+        .ai-response strong {
+            color: #333;
+        }
+    </style>

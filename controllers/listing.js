@@ -41,23 +41,29 @@ module.exports.showListing = async (req, res) => {
    throw new ExpressError(404, "Listing not found");
   }
 
-  // If geometry is missing, geocode the location and update the listing
-  if (!listing.geometry || !listing.geometry.coordinates) {
+  // If geometry is missing or coordinates are missing, geocode the location and update the listing
+  if (!listing.geometry || !listing.geometry.coordinates || listing.geometry.coordinates.length !== 2) {
     try {
       let response = await geocodingClient.forwardGeocode({
-        query: listing.location,
+        query: listing.location || "Jaipur, India",
         limit: 1,
       }).send();
-      listing.geometry = response.body.features[0].geometry;
-      await listing.save();
+      
+      if (response.body.features.length > 0) {
+        listing.geometry = response.body.features[0].geometry;
+        await listing.save();
+      } else {
+        // Default coordinates if geocoding fails
+        listing.geometry = { type: "Point", coordinates: [75.7873, 26.9124] }; // Jaipur
+      }
     } catch (error) {
       console.error("Error geocoding location:", error);
-      // Optionally, set a default geometry or handle error
+      listing.geometry = { type: "Point", coordinates: [75.7873, 26.9124] };
     }
   }
 
   console.log(listing);
-  res.render("listings/show.ejs", { listing });
+  res.render("listings/show.ejs", { listing, mapToken });
 };
 
 module.exports.createListing = async (req, res, next) => {
@@ -77,9 +83,14 @@ module.exports.createListing = async (req, res, next) => {
   } else {
     newListing.image = { url: DEFAULT_IMG, filename: "listingimage" };
   }
-  newListing.geometry = response.body.features[0].geometry;
   
-   let savedListing =  await newListing.save();
+  if (response.body.features.length > 0) {
+    newListing.geometry = response.body.features[0].geometry;
+  } else {
+    newListing.geometry = { type: "Point", coordinates: [75.7873, 26.9124] }; // Fallback to Jaipur
+  }
+  
+  let savedListing =  await newListing.save();
    console.log(savedListing);
   req.flash("success", "Successfully added a new listing!");
   res.redirect("/listings");
@@ -116,10 +127,11 @@ module.exports.updateListing = async (req, res) => {
         query: req.body.listing.location,
         limit: 1,
       }).send();
-      update.geometry = response.body.features[0].geometry;
+      if (response.body.features.length > 0) {
+        update.geometry = response.body.features[0].geometry;
+      }
     } catch (error) {
       console.error("Error geocoding location:", error);
-      // Optionally, handle error
     }
   }
 
