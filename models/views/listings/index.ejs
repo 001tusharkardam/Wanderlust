@@ -40,6 +40,7 @@
       margin-top: 0.5rem;
       /* Add some spacing between icon and text */
       margin-bottom: 0;
+      
     }
 
     .tax-info {
@@ -137,19 +138,33 @@
 
   <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
     <% if(allListings.length===0) { %>
-      <div class="col-12">
-        <p style="text-align: center; padding: 2rem; font-size: 1.1rem; color: #666;">
-          No listings found for <strong>
-            <%= selectedCategory || 'this category' %>
-          </strong>. Try selecting a different filter!
-        </p>
+      <div class="col-12 text-center">
+        <div style="padding: 3rem 1rem;">
+          <i class="fa-solid fa-cloud-moon" style="font-size: 3rem; color: #ddd; margin-bottom: 1rem;"></i>
+          <p style="font-size: 1.25rem; color: #555; font-weight: 500;">
+            <% if(search) { %>
+              No results found for "<%= search %>"
+                <% } else if(selectedCategory) { %>
+                  No listings found in "<%= selectedCategory %>"
+                    <% } else { %>
+                      No listings available at the moment.
+                      <% } %>
+          </p>
+          <p style="color: #888;">Try adjusting your search or filters to find what you're looking for.</p>
+          <a href="/listings" class="btn btn-outline-dark mt-2">Clear all filters</a>
+        </div>
       </div>
       <% } %>
         <% for(let listing of allListings) { %>
           <a href="/listings/<%= listing._id %>" class="listing-links">
             <div class="card col listing-card">
-              <img src="<%= typeof listing.image === 'object' ? listing.image.url : listing.image %>"
-                class="card-img-top" alt="listing_image" style="height: 20rem" />
+             <img 
+  src="<%= (typeof listing.image === 'object' ? listing.image.url : listing.image).replace('/upload', '/upload/w_400,q_auto,f_auto') %>" 
+  loading="lazy"
+  class="card-img-top"
+  alt="listing image"
+  style="height:20rem; width:100%; object-fit:cover;"
+/>
               <div class="card-img-overlay"></div>
               <div class="card-body">
                 <p class="card-text">
